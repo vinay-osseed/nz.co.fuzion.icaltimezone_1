@@ -63,7 +63,7 @@ class CRM_Icaltimezone_ICal extends CRM_Core_Page {
         If it does not, it will use the default timezone. */
         $db_tz = civicrm_api3('Event', 'getsingle', [
             'return' => ["timezone"],
-            'id' => 3,
+            'id' => $id,
         ])['timezone'];
 
         /* Override the local timezone to default/event timezone. */
