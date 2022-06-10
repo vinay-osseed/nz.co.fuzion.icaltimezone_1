@@ -64,10 +64,12 @@ class CRM_Icaltimezone_ICal extends CRM_Core_Page {
         $db_tz = civicrm_api3('Event', 'getsingle', [
             'return' => ["timezone"],
             'id' => $id,
-        ])['timezone'];
-
-        /* Override the local timezone to default/event timezone. */
-        $_GET['timezone'] = ($db_tz == null || $db_tz == '_none') ? $_GET['timezone'] : explode(" ", $db_tz)[1];
+        ]);
+        if (array_key_exists('timezone', $db_tz)) {
+            $tz = $db_tz['timezone'];
+            /* Override the local timezone to default/event timezone. */
+            $_GET['timezone'] = ($tz == null || $tz == '_none') ? $_GET['timezone'] : explode(" ", $tz)[1];
+        }
     }
 
     $userTimeZone = $_GET['timezone'] ?? CRM_Core_Config::singleton()->userSystem->getTimeZoneString();
