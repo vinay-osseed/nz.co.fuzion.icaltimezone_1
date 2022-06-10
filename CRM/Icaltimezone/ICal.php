@@ -50,6 +50,26 @@ class CRM_Icaltimezone_ICal extends CRM_Core_Page {
       $end ? $urlParams['end'] = $end : NULL;
       CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/event/ical/gettimezone', $urlParams, FALSE, NULL, FALSE, TRUE));
     }
+
+    /* This is checking if the extension is installed and active. */
+    $ext_exist = civicrm_api3('Extension', 'get', [
+        'key' => 'ind.com.osseed.eventtimezone',
+        'status' => 'installed',
+        'is_active' => 1,
+    ])['count'];
+
+    if ($ext_exist) {
+        /* This is checking if the event has a timezone set.
+        If it does not, it will use the default timezone. */
+        $db_tz = civicrm_api3('Event', 'getsingle', [
+            'return' => ["timezone"],
+            'id' => 3,
+        ])['timezone'];
+
+        /* Override the local timezone to default/event timezone. */
+        $_GET['timezone'] = ($db_tz == null || $db_tz == '_none') ? $_GET['timezone'] : explode(" ", $db_tz)[1];
+    }
+
     $userTimeZone = $_GET['timezone'] ?? CRM_Core_Config::singleton()->userSystem->getTimeZoneString();
 
     $iCalPage = CRM_Utils_Request::retrieveValue('list', 'Positive', 0);
