@@ -68,7 +68,7 @@ class CRM_Icaltimezone_ICal extends CRM_Core_Page {
         if (array_key_exists('timezone', $db_tz)) {
             $tz = $db_tz['timezone'];
             /* Override the local timezone to default/event timezone. */
-            $_GET['timezone'] = ($tz == null || $tz == '_none') ? $_GET['timezone'] : explode(" ", $tz)[1];
+            $event_tz = ($tz == null || $tz == '_none') ? $_GET['timezone'] : explode(" ", $tz)[1];
         }
     }
 
@@ -93,7 +93,7 @@ class CRM_Icaltimezone_ICal extends CRM_Core_Page {
       }
     }
     $template->assign('events', $info);
-    $template->assign('timezone', $userTimeZone);
+    $template->assign('timezone', $event_tz);
 
     // Send data to the correct template for formatting (iCal vs. gData)
     if ($rss) {
