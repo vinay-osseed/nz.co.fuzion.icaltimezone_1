@@ -82,7 +82,8 @@ class CRM_Icaltimezone_ICal extends CRM_Core_Page {
     $config = CRM_Core_Config::singleton();
 
     $info = CRM_Event_BAO_Event::getCompleteInfo($start, $type, $id, $end);
-    $defaultTimezone = new DateTimeZone(date_default_timezone_get());
+    $tz = (isset($event_tz)) ? $event_tz : date_default_timezone_get();
+    $defaultTimezone = new DateTimeZone($tz);
 
     foreach ($info as &$eventInfo) {
       foreach (['start_date', 'end_date', 'registration_start_date', 'registration_end_date'] as $dateField) {
@@ -93,7 +94,7 @@ class CRM_Icaltimezone_ICal extends CRM_Core_Page {
       }
     }
     $template->assign('events', $info);
-    $template->assign('timezone', $event_tz);
+    $template->assign('timezone', $userTimeZone);
 
     // Send data to the correct template for formatting (iCal vs. gData)
     if ($rss) {
